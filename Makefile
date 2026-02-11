@@ -1,4 +1,4 @@
-.PHONY: db-up db-down db-restart db-logs db-psql db-reset seed build run dev build-docker
+.PHONY: db-up db-down db-restart db-logs db-psql db-reset seed build run run-loop dev build-docker
 
 db-up:
 	docker compose -p simple-doc up -d postgres
@@ -27,6 +27,12 @@ build:
 
 run:
 	go run cmd/server/main.go
+
+run-loop:
+	@while true; do \
+		go run cmd/server/main.go; \
+		echo "Server exited. Restarting..."; \
+	done
 
 dev: db-up
 	@echo "Waiting for PostgreSQL..."
