@@ -196,7 +196,10 @@ func main() {
 			contentType = "image/jpeg"
 		}
 
-		sectionID := imageSectionMap[name]
+		sectionID, ok := imageSectionMap[name]
+		if !ok {
+			continue
+		}
 
 		_, err = pool.Exec(ctx,
 			`INSERT INTO images (filename, content_type, data, section_id)

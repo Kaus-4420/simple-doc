@@ -81,7 +81,7 @@ No JavaScript build step. No external dependencies beyond Postgres. Just deploy 
 
 ```bash
 # Clone the repository
-git clone https://github.com/simpledochub/simple-doc.git
+git clone https://github.com/simple-doc/simple-doc.git
 cd simple-doc
 
 # Start database, seed sample data, and run the server
