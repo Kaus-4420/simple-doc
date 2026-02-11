@@ -130,6 +130,85 @@ Pre-built images are available on Docker Hub:
 docker pull simpledochub/simple-doc:latest
 ```
 
+### Kubernetes
+
+```yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: simpledoc-secret
+type: Opaque
+stringData:
+  DATABASE_URL: "postgres://simpledoc:changeme@postgres:5432/simpledoc?sslmode=disable"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: simpledoc
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: simpledoc
+  template:
+    metadata:
+      labels:
+        app: simpledoc
+    spec:
+      containers:
+        - name: simpledoc
+          image: simpledochub/simple-doc:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: simpledoc-secret
+                  key: DATABASE_URL
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "50m"
+            limits:
+              memory: "128Mi"
+              cpu: "200m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: simpledoc
+spec:
+  selector:
+    app: simpledoc
+  ports:
+    - port: 80
+      targetPort: 8080
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: simpledoc
+spec:
+  rules:
+    - host: docs.example.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: simpledoc
+                port:
+                  number: 80
+```
+
+Apply it:
+
+```bash
+kubectl apply -f simpledoc.yaml
+```
+
 ## Configuration
 
 All settings are configured via environment variables:
