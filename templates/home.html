@@ -769,12 +769,21 @@
   {{end}}
 {{end}}
 <div class="footer">{{.Footer}}<br><a href="https://github.com/simple-doc/simple-doc" target="_blank" style="color:var(--text-muted);text-decoration:none;opacity:0.6;transition:opacity 0.2s" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.6'">Powered by SimpleDoc</a></div>
-{{if and .IsEditor .HasRows}}
+{{if .IsEditor}}
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.6/Sortable.min.js"></script>
 <script>
 (function() {
   function saveOrder() {
     var rows = [];
+    // Flat cards grid (no rows defined)
+    var cardsEl = document.querySelector('.cards');
+    if (cardsEl) {
+      var sectionIds = [];
+      cardsEl.querySelectorAll('.card[data-section-id]').forEach(function(c) {
+        sectionIds.push(c.getAttribute('data-section-id'));
+      });
+      rows.push({ id: 0, sort_order: 0, sections: sectionIds });
+    }
     // Ungrouped sections
     var ungroupedEl = document.querySelector('.row-container[data-row-id="0"]');
     if (ungroupedEl) {
@@ -803,6 +812,22 @@
     });
   }
 
+  // Make flat .cards grid sortable (no rows mode)
+  var cardsGrid = document.querySelector('.cards');
+  if (cardsGrid) {
+    new Sortable(cardsGrid, {
+      animation: 150,
+      ghostClass: 'sortable-ghost',
+      chosenClass: 'sortable-chosen',
+      draggable: '.card[data-section-id]',
+      onUpdate: function(evt) {
+        var ac = evt.to.querySelector('.add-card');
+        if (ac) evt.to.appendChild(ac);
+        saveOrder();
+      }
+    });
+  }
+
   // Make each .row-container sortable for sections (connected group)
   document.querySelectorAll('.row-container').forEach(function(el) {
     var addCard = el.querySelector('.add-card');
@@ -811,7 +836,7 @@
       animation: 150,
       ghostClass: 'sortable-ghost',
       chosenClass: 'sortable-chosen',
-      draggable: '.card',
+      draggable: '.card[data-section-id]',
       onMove: function(evt) {
         if (evt.dragged && evt.dragged.classList.contains('add-card')) {
           return false;
