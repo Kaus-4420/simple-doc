@@ -130,6 +130,12 @@ Pre-built images are available on Docker Hub:
 docker pull simpledochub/simple-doc:latest
 ```
 
+### Docker Run
+
+```bash
+docker run -d -p 8080:8080 -e DATABASE_URL="postgres://user:pass@host:5432/simpledoc?sslmode=disable" simpledochub/simple-doc:latest
+```
+
 ### Kubernetes
 
 ```yaml
