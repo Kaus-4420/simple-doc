@@ -130,10 +130,34 @@ Pre-built images are available on Docker Hub:
 docker pull simpledochub/simple-doc:latest
 ```
 
-### Docker Run
+### Docker Compose
+
+```yaml
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: simpledoc
+      POSTGRES_USER: simpledoc
+      POSTGRES_PASSWORD: changeme
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  simpledoc:
+    image: simpledochub/simple-doc:latest
+    ports:
+      - "8080:8080"
+    environment:
+      DATABASE_URL: "postgres://simpledoc:changeme@db:5432/simpledoc?sslmode=disable"
+    depends_on:
+      - db
+
+volumes:
+  pgdata:
+```
 
 ```bash
-docker run -d -p 8080:8080 -e DATABASE_URL="postgres://user:pass@host:5432/simpledoc?sslmode=disable" simpledochub/simple-doc:latest
+docker compose up -d
 ```
 
 ### Kubernetes

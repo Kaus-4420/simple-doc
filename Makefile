@@ -1,4 +1,4 @@
-.PHONY: db-up db-down db-restart db-logs db-psql db-reset seed build run run-loop dev build-docker
+.PHONY: db-up db-down db-restart db-logs db-psql db-reset seed build run run-loop dev build-docker run-docker
 
 db-up:
 	docker compose -p simple-doc up -d postgres
@@ -42,3 +42,6 @@ dev: db-up
 
 build-docker:
 	docker build -t simple-doc:latest .
+
+run-docker:
+	docker compose -p simple-doc --profile docker up -d --build
