@@ -2,7 +2,7 @@
   <img src="static/images/logo.svg" alt="SimpleDoc logo" width="120" />
 </p>
 
-<h1 align="center">SimpleDoc</h1>
+<h1 align="center">simple-doc</h1>
 
 <p align="center">
   A lightweight, self-hosted documentation platform for teams.<br/>
