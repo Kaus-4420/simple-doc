@@ -2,6 +2,8 @@ package handlers
 
 import (
 	"context"
+	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"html/template"
@@ -686,7 +688,8 @@ func (h *Handlers) Image(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	etag := fmt.Sprintf(`"%s-%d"`, img.Filename, img.Version)
+	hash := sha256.Sum256(img.Data)
+	etag := fmt.Sprintf(`"%s"`, hex.EncodeToString(hash[:16]))
 	w.Header().Set("Content-Type", img.ContentType)
 	w.Header().Set("Cache-Control", "no-cache")
 	w.Header().Set("ETag", etag)
