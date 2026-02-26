@@ -102,7 +102,7 @@ func (h *Handlers) RequireAdmin(next http.HandlerFunc) http.HandlerFunc {
 }
 
 func (h *Handlers) adminData(r *http.Request, active string) AdminData {
-	title, themeCSS := h.siteSettings(r.Context())
+	title, _, themeCSS := h.siteSettings(r.Context())
 	return AdminData{
 		SiteTitle:     title,
 		ThemeCSS:      themeCSS,

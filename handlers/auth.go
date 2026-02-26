@@ -235,7 +235,7 @@ type LoginData struct {
 }
 
 func (h *Handlers) LoginPage(w http.ResponseWriter, r *http.Request) {
-	title, themeCSS := h.siteSettings(r.Context())
+	title, _, themeCSS := h.siteSettings(r.Context())
 	data := LoginData{
 		SiteTitle: title,
 		ThemeCSS:  themeCSS,
@@ -342,7 +342,7 @@ func (h *Handlers) Logout(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handlers) renderLoginError(w http.ResponseWriter, r *http.Request, msg string) {
-	title, themeCSS := h.siteSettings(r.Context())
+	title, _, themeCSS := h.siteSettings(r.Context())
 	ip := getClientIP(r)
 	data := LoginData{
 		SiteTitle: title,
@@ -381,7 +381,7 @@ func (h *Handlers) ResetPasswordPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	title, themeCSS := h.siteSettings(r.Context())
+	title, _, themeCSS := h.siteSettings(r.Context())
 	data := ResetPasswordData{
 		SiteTitle: title,
 		ThemeCSS:  themeCSS,
@@ -402,7 +402,7 @@ func (h *Handlers) ResetPassword(w http.ResponseWriter, r *http.Request) {
 	password := r.FormValue("password")
 	confirm := r.FormValue("confirm_password")
 
-	title, themeCSS := h.siteSettings(r.Context())
+	title, _, themeCSS := h.siteSettings(r.Context())
 
 	if token == "" {
 		h.notFound(w, r)

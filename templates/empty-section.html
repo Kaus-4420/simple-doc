@@ -227,11 +227,11 @@
 <aside class="sidebar">
   <div class="sidebar-header">
     <h1>{{.Section.Title}}</h1>
-    <div class="subtitle">SolarFlux Documentation</div>
+    <div class="subtitle">{{.Badge}}</div>
   </div>
   <a class="sidebar-home" href="{{.HomePath}}">
     <svg viewBox="0 0 20 20"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/></svg>
-    All Documentation
+    Home
   </a>
   {{if .IsEditor}}<a class="sidebar-add" href="/sections/{{.Section.Name}}/pages/new">
     <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>

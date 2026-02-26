@@ -57,6 +57,7 @@ type TemplatePage struct {
 
 type SiteData struct {
 	SiteTitle     string
+	Badge         string
 	ThemeCSS      template.HTML
 	Pages         []TemplatePage
 	Current       TemplatePage
@@ -70,6 +71,7 @@ type SiteData struct {
 
 type EditData struct {
 	SiteTitle     string
+	Badge         string
 	ThemeCSS      template.HTML
 	Pages         []TemplatePage
 	Section       TemplateSection
@@ -229,7 +231,7 @@ type ErrorData struct {
 }
 
 func (h *Handlers) renderError(w http.ResponseWriter, r *http.Request, code int, title, message string) {
-	siteTitle, themeCSS := h.siteSettings(r.Context())
+	siteTitle, _, themeCSS := h.siteSettings(r.Context())
 	w.WriteHeader(code)
 	data := ErrorData{
 		SiteTitle: siteTitle,
@@ -259,9 +261,9 @@ func (h *Handlers) serverError(w http.ResponseWriter, r *http.Request) {
 		"An unexpected error occurred. Please try again later.")
 }
 
-func (h *Handlers) siteSettings(ctx context.Context) (string, template.HTML) {
+func (h *Handlers) siteSettings(ctx context.Context) (string, string, template.HTML) {
 	settings, _ := h.DB.GetSiteSettings(ctx)
-	return settings.SiteTitle, ThemeCSS(settings.Theme, settings.AccentColor)
+	return settings.SiteTitle, settings.Badge, ThemeCSS(settings.Theme, settings.AccentColor)
 }
 
 func userFirstname(ctx context.Context) string {
@@ -451,7 +453,7 @@ func (h *Handlers) Section(w http.ResponseWriter, r *http.Request) {
 	first, err := h.DB.GetFirstPage(r.Context(), section.ID)
 	if err != nil {
 		// Section exists but has no pages — show empty state
-		title, themeCSS := h.siteSettings(r.Context())
+		title, badge, themeCSS := h.siteSettings(r.Context())
 		previewing := inPreviewMode(r.Context())
 		var previewRolesStr string
 		if previewing {
@@ -463,6 +465,7 @@ func (h *Handlers) Section(w http.ResponseWriter, r *http.Request) {
 		}
 		data := SiteData{
 			SiteTitle: title,
+			Badge:     badge,
 			ThemeCSS:  themeCSS,
 			Section: TemplateSection{
 				ID:          section.ID,
@@ -527,7 +530,7 @@ func (h *Handlers) Page(w http.ResponseWriter, r *http.Request) {
 
 	navPages := buildPageTree(allPages, slug)
 
-	pageTitle, pageThemeCSS := h.siteSettings(r.Context())
+	pageTitle, pageBadge, pageThemeCSS := h.siteSettings(r.Context())
 	previewing := inPreviewMode(r.Context())
 	var previewRolesStr string
 	if previewing {
@@ -539,6 +542,7 @@ func (h *Handlers) Page(w http.ResponseWriter, r *http.Request) {
 	}
 	data := SiteData{
 		SiteTitle: pageTitle,
+		Badge:     pageBadge,
 		ThemeCSS:  pageThemeCSS,
 		Pages:     navPages,
 		Current: TemplatePage{
@@ -594,9 +598,10 @@ func (h *Handlers) EditPage(w http.ResponseWriter, r *http.Request) {
 		slog.Error("EditPage images", "error", err)
 	}
 
-	editTitle, editThemeCSS := h.siteSettings(r.Context())
+	editTitle, editBadge, editThemeCSS := h.siteSettings(r.Context())
 	data := EditData{
 		SiteTitle: editTitle,
+		Badge:     editBadge,
 		ThemeCSS:  editThemeCSS,
 		Pages:     navPages,
 		Section: TemplateSection{
@@ -820,9 +825,10 @@ func (h *Handlers) NewPageForm(w http.ResponseWriter, r *http.Request) {
 
 	navPages := buildPageTree(allPages, "")
 
-	npTitle, npThemeCSS := h.siteSettings(r.Context())
+	npTitle, npBadge, npThemeCSS := h.siteSettings(r.Context())
 	data := EditData{
 		SiteTitle: npTitle,
+		Badge:     npBadge,
 		ThemeCSS:  npThemeCSS,
 		Pages:     navPages,
 		Section: TemplateSection{
@@ -888,7 +894,7 @@ func (h *Handlers) CreatePage(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handlers) NewSectionForm(w http.ResponseWriter, r *http.Request) {
-	nsTitle, nsThemeCSS := h.siteSettings(r.Context())
+	nsTitle, _, nsThemeCSS := h.siteSettings(r.Context())
 	roles, _ := h.DB.ListRoles(r.Context())
 	data := HomeData{
 		SiteTitle:     nsTitle,
@@ -968,7 +974,7 @@ func (h *Handlers) EditSectionForm(w http.ResponseWriter, r *http.Request) {
 	allPages, _ := h.DB.ListPagesBySection(r.Context(), section.ID)
 	tplPages := buildPageTree(allPages, "")
 
-	esTitle, esThemeCSS := h.siteSettings(r.Context())
+	esTitle, _, esThemeCSS := h.siteSettings(r.Context())
 	data := EditSectionData{
 		SiteTitle:     esTitle,
 		ThemeCSS:      esThemeCSS,
@@ -1223,7 +1229,7 @@ func (h *Handlers) UpdateHome(w http.ResponseWriter, r *http.Request) {
 // --- Section Row handlers ---
 
 func (h *Handlers) NewRowForm(w http.ResponseWriter, r *http.Request) {
-	siteTitle, themeCSS := h.siteSettings(r.Context())
+	siteTitle, _, themeCSS := h.siteSettings(r.Context())
 	data := RowFormData{
 		SiteTitle:     siteTitle,
 		ThemeCSS:      themeCSS,
@@ -1282,7 +1288,7 @@ func (h *Handlers) EditRowForm(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	siteTitle, themeCSS := h.siteSettings(r.Context())
+	siteTitle, _, themeCSS := h.siteSettings(r.Context())
 	data := RowFormData{
 		SiteTitle:     siteTitle,
 		ThemeCSS:      themeCSS,
